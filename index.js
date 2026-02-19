@@ -140,7 +140,23 @@ app.delete("/chats/:id", asyncWrap(async  (req, res,next) => {
 }));
 
 
-//Error handling middlaware
+const handlevalidationErr = (err) => {
+console.log("This was a validating error.please follow roles ");
+console.dir(err.message);
+return err;
+}
+
+
+app.use((err,req,res,next)=>{
+  console.log(err.name);
+  if(err.name === "ValidationError"){
+   err =  handlevalidationErr(err);
+    
+  }
+  next(err);
+});
+
+//Error handling middlaware 500
 app.use((err , req , res , next) => {
   let {status = 500 , message="Some Error Occured"} = err;
   res.status(status).send(message);
