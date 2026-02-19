@@ -22,7 +22,6 @@ app.use (methodOverride ("_method"));
 
 
 
-
 main()
 .then(() => {
   console.log("Connection Sucessfull")
@@ -61,43 +60,46 @@ app.get('/chats/new', (req, res) => {
 
 
 //create Chat Route
-app.post("/chats" , async (req,res,next) => {
-  try{
+app.post("/chats" , asyncWrap( async (req,res,next) => {
+
     let {from , to , msg } = req.body;
     let newChat = new Chat({
       from: from,
       to:to,
       msg:msg,
       create_at:new Date(),
-
     });
     await newChat.save();
     res.redirect("/chats");
-  } catch(err){
-    next(err);
-  }
-});
+})
+);
   
+
+//for code Error (asyncWrap)
+function asyncWrap(fn){
+  return function(req,res,next){
+    fn(req,res,next).catch(err =>next(err));
+  };
+}
+
 
 
 
 //  New Show route-- IMP for Error
-app.get("/chats/:id" , async (req,res, next) => {
-  try{
+app.get("/chats/:id" ,  asyncWrap( async (req,res, next) => {
+  
       let {id} = req.params;
   let chat = await Chat.findById(id);
 
-  //for use for mistack the chat Id
-  // if(!chat){
-  //   next( new ExpressError(404,"Chat not found"));
-  // }
+  // for use for mistack the chat Id
+  if(!chat){
+    next( new ExpressError(404,"Chat not found"));
+  }
   res.render("edit.ejs" , {chat});
 
-  }catch(err){
-    next(err)
-  }
+ 
 
-});
+}));
 
 
 
@@ -114,37 +116,28 @@ try{
 
 
  //update chat route
-app.put("/chats/:id", async (req, res,next) => {
-  try{
+app.put("/chats/:id", asyncWrap(async (req, res,next) => {
+
      let {id} = req.params;
   let { msg: newMsg} = req.body;
   console.log(newMsg);
   
   //update the chat msg
   let updatedChat = await Chat.findByIdAndUpdate(id , {msg : newMsg}, {runvalidators:true , new:true}
-
   );
   console.log(updatedChat);
   res.redirect('/chats');
-
-  }catch(err){
-    next(err)
-  }
- 
-});
+}));
 
 
 //Delete chat route
-app.delete("/chats/:id", async  (req, res,next) => {
-  try{
+app.delete("/chats/:id", asyncWrap(async  (req, res,next) => {
+
      let {id} = req.params;
   let Deleted = await Chat.findByIdAndDelete(id);
   console.log("Deleted Chat: " , Deleted);
   res.redirect('/chats');
-  }catch(err){
-    next(err);
-  }
-});
+}));
 
 
 //Error handling middlaware
