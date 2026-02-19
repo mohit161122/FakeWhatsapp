@@ -1,0 +1,42 @@
+body{
+    margin-left:20px;
+}
+
+.chat{
+    background-color: lightblue;
+    padding: 10px;
+    border-radius: 16px;
+    border:2px solid black;
+    display: inline-block;
+}
+.msg{
+    color: white;
+    background-color: dodgerblue;
+    padding: 5px 15px;
+    border-radius: 16px;
+}
+.Button{
+    padding: 4px 10px;
+   
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+   
+}
+
+#Edit{
+    color: black;
+    background-color: yellowgreen;
+
+}
+#Delete{
+    color: white;
+    background-color: red;
+
+}
+#Show{
+    color: white;
+    background-color: rgb(52, 152, 219);;
+
+}
